@@ -36,7 +36,8 @@ public class InsertionSortTest {
         assertTrue(helper.sorted(ys));
         sorter.postProcess(ys);
         final int compares = (int) statPack.getStatistics(InstrumentedHelper.COMPARES).mean();
-        assertEquals(list.size() - 1, compares);
+        //+++++++++
+        assertEquals(list.size() -1, compares);
         final int inversions = (int) statPack.getStatistics(InstrumentedHelper.INVERSIONS).mean();
         assertEquals(0L, inversions);
         final int fixes = (int) statPack.getStatistics(InstrumentedHelper.FIXES).mean();

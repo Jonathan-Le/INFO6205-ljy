@@ -1,5 +1,8 @@
 package edu.neu.coe.info6205.util;
 
+import edu.neu.coe.info6205.sort.Helper;
+
+import java.lang.reflect.Array;
 import java.util.function.Supplier;
 
 /**
@@ -27,4 +30,6 @@ public interface Benchmark<T> {
      * @return the average number of milliseconds taken for each run of function f.
      */
     double runFromSupplier(Supplier<T> supplier, int m);
+
+
 }

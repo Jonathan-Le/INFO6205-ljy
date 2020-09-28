@@ -4,12 +4,19 @@
 
 package edu.neu.coe.info6205.util;
 
+import edu.neu.coe.info6205.sort.BaseHelper;
+import edu.neu.coe.info6205.sort.GenericSort;
+import edu.neu.coe.info6205.sort.Helper;
+import edu.neu.coe.info6205.sort.simple.InsertionSort;
+
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static edu.neu.coe.info6205.util.Utilities.formatWhole;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class implements a simple Benchmark utility for measuring the running time of algorithms.
@@ -125,4 +132,56 @@ public class Benchmark_Timer<T> implements Benchmark<T> {
     private final Consumer<T> fPost;
 
     final static LazyLogger logger = new LazyLogger(Benchmark_Timer.class);
+
+    public static void main(String[] args) {
+        InsertionSort is = new InsertionSort();
+        int length = 8000;
+        int l =length;
+        int nRuns = 1000;
+        Random random = new Random();
+        Integer[] a=new Integer[length];
+        Integer[] b=new Integer[length];
+        Integer[] c=new Integer[length];
+        Integer[] d=new Integer[length];
+
+        for (int i=0;i<length;i++){
+            a[i]=i;
+            b[i]=l--;
+            if(i<length/2)
+                c[i]=i;
+            else
+                for (int j=0;j<length/2;j++)
+                    c[i]=l--;
+            d[i]= random.nextInt(1000);
+        }
+
+        Benchmark benchmark1= new Benchmark_Timer<>("Initial-ordered Array Length: "+length+"InsertionSort1",
+                t->{ is.sort(a); return null;},
+                t->{is.sort(a);},
+                t->{is.sort(a);});
+        Benchmark benchmark2= new Benchmark_Timer<>("Reverse-ordered Array Length: "+length+"InsertionSort2",
+                t->{ is.sort(b); return null;},
+                t->{is.sort(b);},
+                t->{is.sort(b);});
+        Benchmark benchmark3= new Benchmark_Timer<>("Partially-ordered Array Length: "+length+"InsertionSort3",
+                t->{ is.sort(c); return null;},
+                t->{is.sort(c);},
+                t->{is.sort(c);});
+        Benchmark benchmark4= new Benchmark_Timer<>("Random-ordered Array Length: "+length+"InsertionSort4",
+                t->{ is.sort(d); return null;},
+                t->{is.sort(d);},
+                t->{is.sort(d);});
+        //--------------Timed--------------+
+
+        double time1=benchmark1.run(true,nRuns);
+        System.out.println("time1: "+time1);
+        double time2=benchmark2.run(true,nRuns);
+        System.out.println("time2: "+time2);
+        double time3=benchmark3.run(true,nRuns);
+        System.out.println("time3: "+time3);
+        double time4=benchmark4.run(true,nRuns);
+        System.out.println("time4: "+time4);
+
+
+    }
 }
