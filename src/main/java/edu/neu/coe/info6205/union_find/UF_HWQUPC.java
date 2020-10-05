@@ -7,7 +7,7 @@
  */
 package edu.neu.coe.info6205.union_find;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Height-weighted Quick Union with Path Compression
@@ -82,6 +82,10 @@ public class UF_HWQUPC implements UF {
         validate(p);
         int root = p;
         // TO BE IMPLEMENTED
+        while( root != parent[p]){
+                p=parent[p];
+                root=parent[p];
+        }
         return root;
     }
 
@@ -109,9 +113,11 @@ public class UF_HWQUPC implements UF {
      *                                  both {@code 0 <= p < n} and {@code 0 <= q < n}
      */
     public void union(int p, int q) {
-        // CONSIDER can we avoid doing find again?
-        mergeComponents(find(p), find(q));
-        count--;
+//        // CONSIDER can we avoid doing find again?
+
+            mergeComponents(find(p), find(q));
+            count--;
+
     }
 
     @Override
@@ -169,6 +175,21 @@ public class UF_HWQUPC implements UF {
 
     private void mergeComponents(int i, int j) {
         // TO BE IMPLEMENTED make shorter root point to taller one
+        if(height[i]>height[j]){
+            parent[j]=i;
+            height[i]+=height[j];
+        }else if(height[i]<height[j]){
+            parent[i]=j;
+            height[j]+=height[i];
+        }else{
+            parent[j]=i;
+            height[i]+=height[j];
+        }
+        if(pathCompression==true)
+        for(int x=0;x<size();x++)
+        {
+            doPathCompression(x);
+        }
     }
 
     /**
@@ -176,5 +197,45 @@ public class UF_HWQUPC implements UF {
      */
     private void doPathCompression(int i) {
         // TO BE IMPLEMENTED update parent to value of grandparent
+
+        if(parent[i]!=find(i)){
+            parent[i]=find(i);
+        }
     }
+
+
+    public static int count(int N){
+
+        int count = N;
+        Random ramdon=new Random();
+        int m=0;
+
+        UF_HWQUPC sample = new UF_HWQUPC(N);
+
+        while(sample.components()!=1){
+            int ramdon1 = ramdon.nextInt(N);
+            int ramdon2 = ramdon.nextInt(N);;
+//            System.out.println("ramdona="+ramdon1+"\n"+"ramdonb="+ramdon2);
+            if(!sample.isConnected(ramdon1,ramdon2)) {
+                sample.union(ramdon1,ramdon2);
+            }
+            m++;
+        }
+        //System.out.println("N="+N+"\n"+"m="+m);
+        return m;
+    }
+
+     public static void main(String[] args) {
+         int num=10;
+         int aveM=0;
+         int run = 1000;
+        for(int i=0;i<50;i++){
+            for (int j=0;j<run;j++)
+                aveM+=count(num);
+            //System.out.println("("+num+" "+aveM/run+")");
+            System.out.println(num+" "+aveM/run);
+            num+=100;
+        }
+     }
+
 }
