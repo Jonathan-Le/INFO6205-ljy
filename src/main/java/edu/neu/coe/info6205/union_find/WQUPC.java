@@ -6,7 +6,7 @@ package edu.neu.coe.info6205.union_find;
 /**
  * Weighted Quick Union with Path Compression
  */
-public class WQUPC {
+public class WQUPC implements UF{
     private final int[] parent;   // parent[i] = parent of i
     private final int[] size;   // size[i] = size of subtree rooted at i
     private int count;  // number of components
@@ -28,7 +28,9 @@ public class WQUPC {
             size[i] = 1;
         }
     }
-
+    public int components() {
+        return count;
+    }
     public void show() {
         for (int i = 0; i < parent.length; i++) {
             System.out.printf("%d: %d, %d\n", i, parent[i], size[i]);
@@ -54,13 +56,13 @@ public class WQUPC {
     public int find(int p) {
         validate(p);
         int root = p;
-        while (root != parent[root]) {
-            root = parent[root];
-        }
-        while (p != root) {
-            int newp = parent[p];
-            parent[p] = root;
-            p = newp;
+        // TO BE IMPLEMENTED
+        while(root!=parent[root])
+            root=parent[root];
+        while( p!=root){
+            int newp=parent[p];
+            parent[p]=root;
+            p=newp;
         }
         return root;
     }
@@ -73,6 +75,12 @@ public class WQUPC {
         }
     }
 
+    void doPathCompression(int i) {
+        // TO BE IMPLEMENTED update parent to value of grandparent
+        if (parent[i] != find(i)) {
+            parent[i] = find(i);
+        }
+    }
     /**
      * Returns true if the the two sites are in the same component.
      *
@@ -108,7 +116,22 @@ public class WQUPC {
             parent[rootQ] = rootP;
             size[rootP] += size[rootQ];
         }
+
         count--;
     }
 
+    @Override
+    public boolean isConnected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    @Override
+    public int size() {
+        return parent.length;
+    }
+
+    @Override
+    public void connect(int p, int q) {
+        if (!isConnected(p, q)) union(p, q);
+    }
 }
